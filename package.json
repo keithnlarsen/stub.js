@@ -1,0 +1,13 @@
+{
+  "name": "stub-js",
+  "version": "1.0.0",
+  "directories": {
+    "lib": "./lib/"
+  },
+  "main": "./lib/stub",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
