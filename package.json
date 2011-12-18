@@ -1,13 +1,19 @@
 {
-  "name": "stub-js",
+  "author": "keithnlarsen <keithnlarsen@gmail.com>",
+  "name": "stub.js",
+  "description": "A super simple, easy to use mocking library for Nodejs.",
   "version": "1.0.0",
-  "directories": {
-    "lib": "./lib/"
+  "repository": {
+    "type" : "git",
+    "url": "https://github.com/keithnlarsen/stub.js.git"
   },
-  "main": "./lib/stub",
-  "dependencies": {},
-  "devDependencies": {},
-  "engines": {
-    "node": "*"
+  "directories": {
+    "lib": "./lib"
   }
+  "main" : "./lib/stub",
+  "engines": {
+    "node": ">0.4.2"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }
