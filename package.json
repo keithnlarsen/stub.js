@@ -2,7 +2,7 @@
   "author": "keithnlarsen <keithnlarsen@gmail.com>",
   "name": "stub.js",
   "description": "A super simple, easy to use mocking library for Nodejs.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type" : "git",
     "url": "https://github.com/keithnlarsen/stub.js.git"
