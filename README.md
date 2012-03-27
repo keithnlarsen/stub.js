@@ -7,16 +7,16 @@ Stub.js is a dead simple to use mocking / stubbing library to help you unit test
 
 ## Why a stubbing library?
 
-Well, javascript has the ability to mock object inherantly built into it, you can just define an
+Well, javascript has the ability to mock an object built into it, you can just define an
 object literal, and wammo, you have a mock.  But what if I want to track what happened to that
-mock when it is passed into a some code module that I want to test.  You need something to record
+mock when it's passed into some code module that I want to test?  You need something to record
 what has happened while it was in use.  That is what stub does, it will record everything that happens
 to a stubbed method, and allow you to assert on expected events later.
 
-## But there are already libraries out there?
+## But there are already libraries out there for javascript?
 
 Yes, there are, but they all seemed so heavy to me, and tried to take on an almost Java-ish feel
-to them, but this is javascript, why does it have to be so complex?  So I created my own library
+to them.  But this is javascript, why does it have to be so complex?  So I created my own library
 that I think is just complex enough to get the job done.
 
 # Contribute
