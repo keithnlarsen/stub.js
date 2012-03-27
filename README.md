@@ -27,7 +27,7 @@ So far this is dependant on:
 
 # Example with both Synchronous and Asynchronous stubs
 
-## Here is the module we want to isolate and test
+### Here is the module we want to isolate and test
 
 ```javascript
 module.exports = (function() {
@@ -50,47 +50,49 @@ module.exports = (function() {
 }());
 ```
 
-## Here is what our test case would look like using Mocha, Should.js, and Stub.js
+### Here is what our test case would look like using Mocha, Should.js, and Stub.js
 
-    describe( 'myApp.tests.unit.controllers.person', function() {
+```javascript
+describe( 'myApp.tests.unit.controllers.person', function() {
 
-      var stub = require('stub.js');
-      var mockPersonModel;
+  var stub = require('stub.js');
+  var mockPersonModel;
 
-      var expectedPerson = {
-        firstName: 'test',
-        lastName: 'test2'
-      };
+  var expectedPerson = {
+    firstName: 'test',
+    lastName: 'test2'
+  };
 
-      beforeEach(done){
-        // Here we define our mock
-        mockPersonModel = {
-          // Here we are defining a stub method that will return synchronously a nested mock object.
-          find: stub.sync( {
-            // Here we are defining an exec method that will execute asynchronously and pass a null, and a 'testPerson' object to its callback.
-            exec: stub.async(null, expectedPerson)
-          } )
-        };
-        done();
-      }
+  beforeEach(done){
+    // Here we define our mock
+    mockPersonModel = {
+      // Here we are defining a stub method that will return synchronously a nested mock object.
+      find: stub.sync( {
+        // Here we are defining an exec method that will execute asynchronously and pass a null, and a 'testPerson' object to its callback.
+        exec: stub.async(null, expectedPerson)
+      } )
+    };
+    done();
+  }
 
-      describe( '.findById(id)', function() {
-        it( 'should call the model find function and return the specified object', function( done ) {
+  describe( '.findById(id)', function() {
+    it( 'should call the model find function and return the specified object', function( done ) {
 
-          // Now we can test the controller giving it our mock object
-          personController.init(mockPersonModel);
+      // Now we can test the controller giving it our mock object
+      personController.init(mockPersonModel);
 
-          personController.findById('1234', function ( err, actualPerson) {
-            actualPerson.firstName.should.equal(expectedPerson.firstName);
-            actualPerson.lastName.should.equal(expectedPerson.lastName);
-            mockPersonModel.find.called.withArguments( {_id: '1234'} );
-            // Heres how we test our nested mock object, that it was called as we expected.
-            mockPersonModel.find().exec.called.withNoArguments();
-            done(err);
-          });
-        });
+      personController.findById('1234', function ( err, actualPerson) {
+        actualPerson.firstName.should.equal(expectedPerson.firstName);
+        actualPerson.lastName.should.equal(expectedPerson.lastName);
+        mockPersonModel.find.called.withArguments( {_id: '1234'} );
+        // Heres how we test our nested mock object, that it was called as we expected.
+        mockPersonModel.find().exec.called.withNoArguments();
+        done(err);
       });
     });
+  });
+});
+```
 
 # API
 
@@ -99,49 +101,76 @@ module.exports = (function() {
 ### stub.sync( Error )
 If a ```new Error('some error')``` or any object that inherits from Error is provide, it will simulate throwing an error from within the mock.
 
-    // Define the mock
-    var mockObject = {
-        method: stub.sync( new Error('some error occurred.'))
-    };
+```javascript
+// Define the mock
+var mockObject = {
+    method: stub.sync( new Error('some error occurred.'))
+};
 
 When our stubbed method is called it will throw an exception, instead of returning a value.
 
-    // throws an error
-    mockObject.method( 'something' );
+```javascript
+  // throws an error
+  mockObject.method( 'something' );
+```
 
 We can also later inspect our mock to see what happened.
 
-    // this an actual test assertion it will cause a test failure if it doesn't pass.
-    mockObject.method.called.withArguments( 'something' );
+```javascript
+  // this an actual test assertion it will cause a test failure if it doesn't pass.
+  mockObject.method.called.withArguments( 'something' );
+```
 
 ### stub.sync( returnValue )
 If any value or object other than Error is passed in will just be returned as the ```returnValue``` from the stub when it is called.
 
-    // Define the mock
-    var mockObject = {
-        method: stub.sync( true )
-    };
+```javascript
+// Define the mock
+var mockObject = {
+    method: stub.sync( true )
+};
+```
 
 When our stubbed method is called it will return the hard coded value that we specificied.
 
-    // returns true
-    var result = mockObject.method( 'something' );
+```javascript
+// returns true
+var result = mockObject.method( 'something' );
+```
 
 We can also later inspect our mock to see what happened.
 
-    // this an actual test assertion it will cause a test failure if it doesn't pass.
-    mockObject.method.called.withArguments( 'something' );
+```javascript
+// this an actual test assertion it will cause a test failure if it doesn't pass.
+mockObject.method.called.withArguments( 'something' );
+```
 
 ### stub.async( param1, param2, […])
 
-This will create an `asynchronous` stub that will pass the provided values to a call back.
+This will create an `asynchronous` stub that will pass the provided values to a call back.  FYI - The defacto standard for asynchronous calls in javascript is that the first parameter in the callback is reserved for errors, subsequent parameters are for success.
 
-    // The defacto standard for asynchronous calls in javascript is that the first parameter in the callback is reserved for errors, subsequent parameters are for success.
-    // Define our mock and stub
-    var mockObject = {
-        method: stub.async( null, 'our value' )
-    }
+```javascript
+// Define our mock and stub
+var mockObject = {
+    method: stub.async( null, 'our value' )
+}
+```
 
+When called our stubbed method will call the callback with the values that we specified.
+
+```javascript
+// calls the callback with 'our value'
+mockObject.method( 'some value', function (err, value ) {
+
+} );
+
+Again, we can assert what our stubs where called with.
+
+```javascript
+// this an actual test assertion, in this case it would cause a failure
+// because the stub was actually called with 'some value'.
+mockObject.method.called.withArguments( 'something' );
+```
 
 ## Asserting your Stubs
 
