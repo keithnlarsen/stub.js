@@ -162,8 +162,9 @@ When called our stubbed method will call the callback with the values that we sp
 ```javascript
 // calls the callback with 'our value'
 mockObject.method( 'some value', function (err, value ) {
-
+    // Do stuff
 } );
+```
 
 Again, we can assert what our stubs where called with.
 
