@@ -13,7 +13,7 @@ Feel free to submit your comments / feedback / suggestions / feature request.  J
  * stub synchronous funcitons
  * stub a nested chain of stubs
  * throw simulated errors from within the stub
- 
+
 # Installation
 
     npm install stub-js
@@ -29,52 +29,54 @@ So far this is dependant on:
 
 ## Here is the module we want to isolate and test
 
-    module.exports = (function() {
-      var model;
-    
-      function init ( personModel ) {
-        model = personModel;
-      }
-    
-      function findById(id, callback){
-        model.find( {_id: id } ).exec( function( err, person ) {
-          callback(err, person);
-        } );
-      }
-    
-      return {
-        init: init,
-        findById: findById
-      }
-    }());
+```javascript
+module.exports = (function() {
+  var model;
+
+  function init ( personModel ) {
+    model = personModel;
+  }
+
+  function findById(id, callback){
+    model.find( {_id: id } ).exec( function( err, person ) {
+      callback(err, person);
+    } );
+  }
+
+  return {
+    init: init,
+    findById: findById
+  }
+}());
+```
 
 ## Here is what our test case would look like using Mocha, Should.js, and Stub.js
 
     describe( 'myApp.tests.unit.controllers.person', function() {
-    
+
       var stub = require('stub.js');
       var mockPersonModel;
-      
+
       var expectedPerson = {
         firstName: 'test',
         lastName: 'test2'
       };
-    
+
       beforeEach(done){
         // Here we define our mock
-        mockPersonModel = { 
+        mockPersonModel = {
           // Here we are defining a stub method that will return synchronously a nested mock object.
           find: stub.sync( {
             // Here we are defining an exec method that will execute asynchronously and pass a null, and a 'testPerson' object to its callback.
-            exec: stub.async(null, expectedPerson) 
+            exec: stub.async(null, expectedPerson)
           } )
         };
         done();
       }
-    
+
       describe( '.findById(id)', function() {
         it( 'should call the model find function and return the specified object', function( done ) {
-          
+
           // Now we can test the controller giving it our mock object
           personController.init(mockPersonModel);
 
@@ -132,7 +134,14 @@ We can also later inspect our mock to see what happened.
 
 ### stub.async( param1, param2, […])
 
-When called by This will call the provided callback with the values you load here at initialization.
+This will create an `asynchronous` stub that will pass the provided values to a call back.
+
+    // The defacto standard for asynchronous calls in javascript is that the first parameter in the callback is reserved for errors, subsequent parameters are for success.
+    // Define our mock and stub
+    var mockObject = {
+        method: stub.async( null, 'our value' )
+    }
+
 
 ## Asserting your Stubs
 
