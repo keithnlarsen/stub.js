@@ -106,6 +106,7 @@ If a ```new Error('some error')``` or any object that inherits from Error is pro
 var mockObject = {
     method: stub.sync( new Error('some error occurred.'))
 };
+```
 
 When our stubbed method is called it will throw an exception, instead of returning a value.
 
