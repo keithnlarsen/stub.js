@@ -68,7 +68,8 @@ describe( 'myApp.tests.unit.controllers.person', function() {
     mockPersonModel = {
       // Here we are defining a stub method that will return synchronously a nested mock object.
       find: stub.sync( {
-        // Here we are defining an exec method that will execute asynchronously and pass a null, and a 'testPerson' object to its callback.
+        // Here we are defining an exec method that will execute asynchronously and pass a null
+        // and a 'testPerson' object to its callback.
         exec: stub.async(null, expectedPerson)
       } )
     };
