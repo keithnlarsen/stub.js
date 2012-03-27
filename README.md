@@ -113,6 +113,13 @@ describe( 'myApp.tests.unit.controllers.person', function() {
 
 # API
 
+## How to Require it in your test module
+If you have used NPM to install it, or included it in your package.json file, you just have to simply require it and it is ready to use.  No need to use the `new` keyword.
+
+```
+var stub = require('stub.js');
+```
+
 ## Defining a Mock and Stubs
 
 ### stub.sync( Error )
