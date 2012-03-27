@@ -209,6 +209,26 @@ It will test if the first time the method was called that it was called with any
 
 It will test if the first time the method was called that it was called without any arguments.
 
+## Asserting Chained Stubs
+
+Assuming a mock / stubs defined in a nested chain like the following:
+
+```javascript
+var mockObject {
+    stub1: stub.sync( {
+        stub2: stub.sync()
+    })
+}
+```
+
+### mockObject.stub1.called.count(1)
+
+It will assert the first call in the chain was called 1 time.
+
+### mockObject.stub1().stub2.called.count(1)
+
+It will assert the second call in the chain was called 1 time.
+
 ## License
 
 (The MIT License)
