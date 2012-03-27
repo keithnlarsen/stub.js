@@ -3,31 +3,31 @@ Stub.js
 
 Stub.js is a dead simple to use mocking / stubbing library to help you unit test your javascript nodejs modules.
 
-## Contribute
+# Contribute
 
 Feel free to submit your comments / feedback / suggestions / feature request.  Just keep in mind, I want this to stay simple to use, and small and light.
 
-## Features
+# Features
 
  * stub asynchronous functions
  * stub synchronous funcitons
  * stub a nested chain of stubs
  * throw simulated errors from within the stub
  
-## Installation
+# Installation
 
     npm install stub-js
 
-### Dependancies
+## Dependancies
 
 So far this is dependant on:
 
   * Nodejs >= 0.4.1
   * I personally use this with should.js and mocha. They ROCK!
 
-## Example with both Synchronous and Asynchronous stubs
+# Example with both Synchronous and Asynchronous stubs
 
-### Here is the module we want to isolate and test
+## Here is the module we want to isolate and test
 
     module.exports = (function() {
       var model;
@@ -48,7 +48,7 @@ So far this is dependant on:
       }
     }());
 
-### Here is what our test case would look like using Mocha, Should.js, and Stub.js
+## Here is what our test case would look like using Mocha, Should.js, and Stub.js
 
     describe( 'myApp.tests.unit.controllers.person', function() {
     
@@ -64,7 +64,7 @@ So far this is dependant on:
         // Here we define our mock
         mockPersonModel = { 
           // Here we are defining a stub method that will return synchronously a nested mock object.
-          find: stub.sync( null, { 
+          find: stub.sync( {
             // Here we are defining an exec method that will execute asynchronously and pass a null, and a 'testPerson' object to its callback.
             exec: stub.async(null, expectedPerson) 
           } )
@@ -90,20 +90,83 @@ So far this is dependant on:
       });
     });
 
-## API
+# API
 
-There is the following functionality
+## Defining a Mock and Stubs
 
-  * stub.sync(err, returnValue) - if an err is provide, it will simulate throwing an error from within the mock, otherwise it will just return the 'returnValue'.
-  * stub.async( param1, param2, […]) - this will call the provided callback with the values you load here at initialization.
-  * mockObject.stub.called - this contains the information recorded while in use.
-  * mockObject.stub.called.count(2) - will test if the method was called the number of specified times.
-  * mockObject.stub.called.withArguments( args…) - it will test if the arguments you passed in matches the actuals that it was called with.
-  * mockObject.stub.called.withAnyArguments() - it will test if method was called with anything.
-  * mockObject.stub.called.withNoArguments() - it will test if the method was called without any arguments.
-  * mockObject.stub.called.time(1).withArguments( args…) - will test if the first time the method was called that the actual parameters passed to it match what you specified.
-  * mockObject.stub.called.time(1).withAnyArguments() - will test if the first time the method was called that it was called with any arguments.
-  * mockObject.stub.called.time(1).withNoArguments() - will test if the first time the method was called that it was called without any arguments.
+### stub.sync( Error )
+If a ```new Error('some error')``` or any object that inherits from Error is provide, it will simulate throwing an error from within the mock.
+
+    // Define the mock
+    var mockObject = {
+        method: stub.sync( new Error('some error occurred.'))
+    };
+
+When our stubbed method is called it will throw an exception, instead of returning a value.
+
+    // throws an error
+    mockObject.method( 'something' );
+
+We can also later inspect our mock to see what happened.
+
+    // this an actual test assertion it will cause a test failure if it doesn't pass.
+    mockObject.method.called.withArguments( 'something' );
+
+### stub.sync( returnValue )
+If any value or object other than Error is passed in will just be returned as the ```returnValue``` from the stub when it is called.
+
+    // Define the mock
+    var mockObject = {
+        method: stub.sync( true )
+    };
+
+When our stubbed method is called it will return the hard coded value that we specificied.
+
+    // returns true
+    var result = mockObject.method( 'something' );
+
+We can also later inspect our mock to see what happened.
+
+    // this an actual test assertion it will cause a test failure if it doesn't pass.
+    mockObject.method.called.withArguments( 'something' );
+
+### stub.async( param1, param2, […])
+
+When called by This will call the provided callback with the values you load here at initialization.
+
+## Asserting your Stubs
+
+### mockObject.stub.called
+
+This contains the information recorded while in use.
+
+### mockObject.stub.called.count(2)
+
+It will test if the method was called the number of specified times.
+
+### mockObject.stub.called.withArguments( args…)
+
+It will test if the arguments you passed in matches the actuals that it was called with.
+
+### mockObject.stub.called.withAnyArguments()
+
+It will test if method was called with anything.
+
+### mockObject.stub.called.withNoArguments()
+
+It will test if the method was called without any arguments.
+
+### mockObject.stub.called.time(1).withArguments( args…)
+
+It will test if the first time the method was called that the actual parameters passed to it match what you specified.
+
+### mockObject.stub.called.time(1).withAnyArguments()
+
+It will test if the first time the method was called that it was called with any arguments.
+
+### mockObject.stub.called.time(1).withNoArguments()
+
+It will test if the first time the method was called that it was called without any arguments.
 
 ## License
 
