@@ -1,0 +1,338 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Stub.js by keithnlarsen</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/keithnlarsen/stub.js">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/keithnlarsen/stub.js/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/keithnlarsen/stub.js/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Stub.js</h1>
+          <p>A very simple and easy to use mocking / stubbing library for unit testing your nodejs javascript modules</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/keithnlarsen">keithnlarsen</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Stub.js</h1>
+
+<h1>What is Stub.js?</h1>
+
+<p>Stub.js is a dead simple to use mocking / stubbing library to help you unit test your javascript nodejs modules.</p>
+
+<h2>Why a stubbing library?</h2>
+
+<p>Well, javascript has the ability to mock an object built into it, you can just define an
+object literal, and wammo, you have a mock.  But what if I want to track what happened to that
+mock when it's passed into some code module that I want to test?  You need something to record
+what has happened while it was in use.  That is what stub does, it will record everything that happens
+to a stubbed method, and allow you to assert on expected events later.</p>
+
+<h2>But there are already libraries out there for javascript?</h2>
+
+<p>Yes, there are, but they all seemed so heavy to me, and tried to take on an almost Java-ish feel
+to them.  But this is javascript, why does it have to be so complex?  So I created my own library
+that I think is just complex enough to get the job done.</p>
+
+<h1>Contribute</h1>
+
+<p>Feel free to submit your comments / feedback / suggestions / feature request.  Just keep in mind, I want this to stay simple to use, and small and light.</p>
+
+<h1>Features</h1>
+
+<ul>
+<li>stub asynchronous functions</li>
+<li>stub synchronous functions</li>
+<li>stub a nested chain of stubs</li>
+<li>throw simulated errors from within the stub</li>
+</ul><h1>Installation</h1>
+
+<pre><code>npm install stub-js
+</code></pre>
+
+<h2>Dependancies</h2>
+
+<p>So far this is dependant on:</p>
+
+<ul>
+<li>Nodejs &gt;= 0.4.1</li>
+<li>I personally use this with should.js and mocha. They ROCK!</li>
+</ul><h1>Example with both Synchronous and Asynchronous stubs</h1>
+
+<h3>Here is the module we want to isolate and test</h3>
+
+<div class="highlight">
+<pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">model</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">init</span> <span class="p">(</span> <span class="nx">personModel</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">model</span> <span class="o">=</span> <span class="nx">personModel</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">function</span> <span class="nx">findById</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+    <span class="nx">model</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">id</span> <span class="p">}</span> <span class="p">).</span><span class="nx">exec</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">person</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">callback</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">person</span><span class="p">);</span>
+    <span class="p">}</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="nx">init</span><span class="o">:</span> <span class="nx">init</span><span class="p">,</span>
+    <span class="nx">findById</span><span class="o">:</span> <span class="nx">findById</span>
+  <span class="p">}</span>
+<span class="p">}());</span>
+</pre>
+</div>
+
+
+<h3>Here is what our test case would look like using Mocha, Should.js, and Stub.js</h3>
+
+<div class="highlight">
+<pre><span class="nx">describe</span><span class="p">(</span> <span class="s1">'myApp.tests.unit.controllers.person'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="kd">var</span> <span class="nx">stub</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'stub.js'</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">mockPersonModel</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">expectedPerson</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">firstName</span><span class="o">:</span> <span class="s1">'test'</span><span class="p">,</span>
+    <span class="nx">lastName</span><span class="o">:</span> <span class="s1">'test2'</span>
+  <span class="p">};</span>
+
+  <span class="nx">beforeEach</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="c1">// Here we define our mock</span>
+    <span class="nx">mockPersonModel</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="c1">// Here we are defining a stub method that will return synchronously a nested mock object.</span>
+      <span class="nx">find</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="p">{</span>
+        <span class="c1">// Here we are defining an exec method that will execute asynchronously and pass a null</span>
+        <span class="c1">// and a 'testPerson' object to its callback.</span>
+        <span class="nx">exec</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">async</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">expectedPerson</span><span class="p">)</span>
+      <span class="p">}</span> <span class="p">)</span>
+    <span class="p">};</span>
+    <span class="nx">done</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">describe</span><span class="p">(</span> <span class="s1">'.findById(id)'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">it</span><span class="p">(</span> <span class="s1">'should call the model find function and return the specified object'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">done</span> <span class="p">)</span> <span class="p">{</span>
+
+      <span class="c1">// Now we can test the controller giving it our mock object</span>
+      <span class="nx">personController</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">mockPersonModel</span><span class="p">);</span>
+
+      <span class="nx">personController</span><span class="p">.</span><span class="nx">findById</span><span class="p">(</span><span class="s1">'1234'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">actualPerson</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">actualPerson</span><span class="p">.</span><span class="nx">firstName</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">expectedPerson</span><span class="p">.</span><span class="nx">firstName</span><span class="p">);</span>
+        <span class="nx">actualPerson</span><span class="p">.</span><span class="nx">lastName</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">expectedPerson</span><span class="p">.</span><span class="nx">lastName</span><span class="p">);</span>
+        <span class="nx">mockPersonModel</span><span class="p">.</span><span class="nx">find</span><span class="p">.</span><span class="nx">called</span><span class="p">.</span><span class="nx">withArguments</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="s1">'1234'</span><span class="p">}</span> <span class="p">);</span>
+        <span class="c1">// Heres how we test our nested mock object, that it was called as we expected.</span>
+        <span class="nx">mockPersonModel</span><span class="p">.</span><span class="nx">find</span><span class="p">().</span><span class="nx">exec</span><span class="p">.</span><span class="nx">called</span><span class="p">.</span><span class="nx">withNoArguments</span><span class="p">();</span>
+        <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h1>API</h1>
+
+<h2>How to Require it in your test module</h2>
+
+<p>If you have used NPM to install it, or included it in your package.json file, you just have to simply require it and it is ready to use.  No need to use the <code>new</code> keyword.</p>
+
+<pre><code>var stub = require('stub.js');
+</code></pre>
+
+<h2>Defining a Mock and Stubs</h2>
+
+<h3>stub.sync( Error )</h3>
+
+<p>If a <code>new Error('some error')</code> or any object that inherits from Error is provide, it will simulate throwing an error from within the mock.</p>
+
+<div class="highlight">
+<pre><span class="c1">// Define the mock</span>
+<span class="kd">var</span> <span class="nx">mockObject</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">method</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">'some error occurred.'</span><span class="p">))</span>
+<span class="p">};</span>
+</pre>
+</div>
+
+
+<p>When our stubbed method is called it will throw an exception, instead of returning a value.</p>
+
+<div class="highlight">
+<pre>  <span class="c1">// throws an error</span>
+  <span class="nx">mockObject</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="s1">'something'</span> <span class="p">);</span>
+</pre>
+</div>
+
+
+<p>We can also later inspect our mock to see what happened.</p>
+
+<div class="highlight">
+<pre>  <span class="c1">// this an actual test assertion it will cause a test failure if it doesn't pass.</span>
+  <span class="nx">mockObject</span><span class="p">.</span><span class="nx">method</span><span class="p">.</span><span class="nx">called</span><span class="p">.</span><span class="nx">withArguments</span><span class="p">(</span> <span class="s1">'something'</span> <span class="p">);</span>
+</pre>
+</div>
+
+
+<h3>stub.sync( returnValue )</h3>
+
+<p>If any value or object other than Error is passed in will just be returned as the <code>returnValue</code> from the stub when it is called.</p>
+
+<div class="highlight">
+<pre><span class="c1">// Define the mock</span>
+<span class="kd">var</span> <span class="nx">mockObject</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">method</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
+<span class="p">};</span>
+</pre>
+</div>
+
+
+<p>When our stubbed method is called it will return the hard coded value that we specificied.</p>
+
+<div class="highlight">
+<pre><span class="c1">// returns true</span>
+<span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">mockObject</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="s1">'something'</span> <span class="p">);</span>
+</pre>
+</div>
+
+
+<p>We can also later inspect our mock to see what happened.</p>
+
+<div class="highlight">
+<pre><span class="c1">// this an actual test assertion it will cause a test failure if it doesn't pass.</span>
+<span class="nx">mockObject</span><span class="p">.</span><span class="nx">method</span><span class="p">.</span><span class="nx">called</span><span class="p">.</span><span class="nx">withArguments</span><span class="p">(</span> <span class="s1">'something'</span> <span class="p">);</span>
+</pre>
+</div>
+
+
+<h3>stub.async( param1, param2, […])</h3>
+
+<p>This will create an <code>asynchronous</code> stub that will pass the provided values to a call back.  FYI - The defacto standard for asynchronous calls in javascript is that the first parameter in the callback is reserved for errors, subsequent parameters are for success.</p>
+
+<div class="highlight">
+<pre><span class="c1">// Define our mock and stub</span>
+<span class="kd">var</span> <span class="nx">mockObject</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">method</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">async</span><span class="p">(</span> <span class="kc">null</span><span class="p">,</span> <span class="s1">'our value'</span> <span class="p">)</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p>When called our stubbed method will call the callback with the values that we specified.</p>
+
+<div class="highlight">
+<pre><span class="c1">// calls the callback with 'our value'</span>
+<span class="nx">mockObject</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="s1">'some value'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Do stuff</span>
+<span class="p">}</span> <span class="p">);</span>
+</pre>
+</div>
+
+
+<p>Again, we can assert what our stubs where called with.</p>
+
+<div class="highlight">
+<pre><span class="c1">// this an actual test assertion, in this case it would cause a failure</span>
+<span class="c1">// because the stub was actually called with 'some value'.</span>
+<span class="nx">mockObject</span><span class="p">.</span><span class="nx">method</span><span class="p">.</span><span class="nx">called</span><span class="p">.</span><span class="nx">withArguments</span><span class="p">(</span> <span class="s1">'something'</span> <span class="p">);</span>
+</pre>
+</div>
+
+
+<h2>Asserting your Stubs</h2>
+
+<h3>mockObject.stub.called</h3>
+
+<p>This contains the information recorded while in use.</p>
+
+<h3>mockObject.stub.called.count(2)</h3>
+
+<p>It will test if the method was called the number of specified times.</p>
+
+<h3>mockObject.stub.called.withArguments( args…)</h3>
+
+<p>It will test if the arguments you passed in matches the actuals that it was called with.</p>
+
+<h3>mockObject.stub.called.withAnyArguments()</h3>
+
+<p>It will test if method was called with anything.</p>
+
+<h3>mockObject.stub.called.withNoArguments()</h3>
+
+<p>It will test if the method was called without any arguments.</p>
+
+<h3>mockObject.stub.called.time(1).withArguments( args…)</h3>
+
+<p>It will test if the first time the method was called that the actual parameters passed to it match what you specified.</p>
+
+<h3>mockObject.stub.called.time(1).withAnyArguments()</h3>
+
+<p>It will test if the first time the method was called that it was called with any arguments.</p>
+
+<h3>mockObject.stub.called.time(1).withNoArguments()</h3>
+
+<p>It will test if the first time the method was called that it was called without any arguments.</p>
+
+<h2>Asserting Chained Stubs</h2>
+
+<p>Assuming a mock / stubs defined in a nested chain like the following:</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">mockObject</span> <span class="p">{</span>
+    <span class="nx">stub1</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="p">{</span>
+        <span class="nx">stub2</span><span class="o">:</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">sync</span><span class="p">()</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<h3>mockObject.stub1.called.count(1)</h3>
+
+<p>It will assert the first call in the chain was called 1 time.</p>
+
+<h3>mockObject.stub1().stub2.called.count(1)</h3>
+
+<p>It will assert the second call in the chain was called 1 time.</p>
+
+<h2>License</h2>
+
+<p>(The MIT License)</p>
+
+<p>Copyright (c) 2011 Keith Larsen</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
